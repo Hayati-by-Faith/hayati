@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "853595632989",
+    "project_id": "hayati-staging-20260408",
+    "storage_bucket": "hayati-staging-20260408.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853595632989:android:03278f1573b8c6fd8324b4",
+        "android_client_info": {
+          "package_name": "org.elhaya.hayati"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjm-90n3f_fFOy1xICmDEgqZlw74DpuhQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853595632989:android:8d3ce0967f030b8e8324b4",
+        "android_client_info": {
+          "package_name": "org.elhaya.hayati.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjm-90n3f_fFOy1xICmDEgqZlw74DpuhQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

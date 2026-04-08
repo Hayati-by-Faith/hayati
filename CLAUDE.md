@@ -52,3 +52,10 @@ Only these role names are valid:
 - Phase 1 only in the scaffold implementation.
 - Phase 2 through Phase 6 should exist only as stub directories.
 - Do not implement future-phase logic until the architecture explicitly requires it.
+
+## Deployment
+
+- Never deploy to prod without human review.
+- Always run `rules-tests` before deploy.
+- Always tag `firestore.rules` before deploy for rollback.
+- Use the Firebase setup runbook at `docs/runbooks/firebase-setup.md`.

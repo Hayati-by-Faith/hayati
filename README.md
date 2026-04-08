@@ -16,12 +16,20 @@ flutter run -t lib/main_staging.dart --flavor staging --dart-define=FLAVOR=stagi
 flutter run -t lib/main_prod.dart --flavor prod --dart-define=FLAVOR=prod
 ```
 
-## Firebase rules
+## Firebase setup
 
-Deploy only after reviewing the architecture doc and running the rules test suite.
+The Firebase environments are wired to:
+
+- `hayati-dev-20260408`
+- `hayati-staging-20260408`
+- `hayati-prod-20260408`
+
+The operational runbook is [docs/runbooks/firebase-setup.md](./docs/runbooks/firebase-setup.md).
+
+The condensed staging deploy command is:
 
 ```bash
-firebase deploy --only firestore:rules,firestore:indexes
+./scripts/deploy-staging.sh
 ```
 
 ## Cloud Functions bootstrap
@@ -44,6 +52,6 @@ cd rules-tests && npm ci && npm test
 
 ## Notes
 
-- Firebase projects are placeholders for now.
 - Tajawal font files are tracked under `assets/fonts/` as build-time assets.
 - Phase 2 through Phase 6 directories exist only as stubs for now.
+- iOS is deferred for this PR; Android flavor wiring is complete first.

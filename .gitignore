@@ -28,6 +28,9 @@ firestore-debug.log
 *.jks
 google-services.json
 GoogleService-Info.plist
+!android/app/src/dev/google-services.json
+!android/app/src/staging/google-services.json
+!android/app/src/prod/google-services.json
 
 # Env & secrets
 .env
