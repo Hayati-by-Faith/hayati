@@ -1,0 +1,14 @@
+{
+  "name": "hayati-functions",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "lint": "npx --yes eslint@9.20.0 src/**/*.js",
+    "test": "npx --yes jest@29.7.0 --runInBand"
+  },
+  "devDependencies": {}
+}

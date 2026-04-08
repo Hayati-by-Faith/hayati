@@ -1,0 +1,14 @@
+{
+  "name": "hayati-rules-tests",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "test": "npm exec --yes --package=@firebase/rules-unit-testing@5.0.0 --package=firebase@12.6.0 --package=jest@29.7.0 -- jest --runInBand"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
