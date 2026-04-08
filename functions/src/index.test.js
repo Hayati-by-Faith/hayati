@@ -9,11 +9,20 @@ function makeHttpsError(code) {
   return expect.objectContaining({ code });
 }
 
-function makeAdminMock({ serviceVillageId = 'village-a' } = {}) {
+function makeAdminMock({ serviceVillageId = 'village-a', rateLimitCount = 0 } = {}) {
   const setCustomUserClaims = jest.fn().mockResolvedValue(undefined);
   const batch = {
     set: jest.fn(),
     commit: jest.fn().mockResolvedValue(undefined),
+  };
+  const rateLimitSet = jest.fn();
+  const rateLimitSnapshot = {
+    exists: rateLimitCount > 0,
+    data: jest.fn(() => ({ count: rateLimitCount })),
+  };
+  const rateLimitTransaction = {
+    get: jest.fn(async () => rateLimitSnapshot),
+    set: rateLimitSet,
   };
   const participationDoc = { id: 'participation-1' };
   const auditDoc = { id: 'audit-1', set: jest.fn().mockResolvedValue(undefined) };
@@ -27,6 +36,7 @@ function makeAdminMock({ serviceVillageId = 'village-a' } = {}) {
   const servicesCollection = { doc: jest.fn(() => serviceDoc) };
   const firestoreInstance = {
     batch: jest.fn(() => batch),
+    runTransaction: jest.fn(async (callback) => callback(rateLimitTransaction)),
     collection: jest.fn((name) => {
       if (name === 'services') {
         return servicesCollection;
@@ -51,6 +61,9 @@ function makeAdminMock({ serviceVillageId = 'village-a' } = {}) {
     _participationDoc: participationDoc,
     _auditDoc: auditDoc,
     _serviceDoc: serviceDoc,
+    _rateLimitSet: rateLimitSet,
+    _rateLimitSnapshot: rateLimitSnapshot,
+    _rateLimitTransaction: rateLimitTransaction,
   };
 }
 
@@ -152,6 +165,7 @@ describe('functions handlers', () => {
   });
 
   test('sign and verify qr tokens round trip', async () => {
+    const admin = makeAdminMock();
     const clock = () => 1_700_000_000_000;
     const signed = await signQrTokenHandler(
       {
@@ -163,7 +177,7 @@ describe('functions handlers', () => {
           ttlSeconds: 60 * 60 * 24 * 365 * 50,
         },
       },
-      { clock, qrSecret: 'test-secret', nonce: 'fixed-nonce' },
+      { clock, qrSecret: 'test-secret', nonce: 'fixed-nonce', admin },
     );
 
     const verified = await verifyQrTokenHandler(
@@ -186,9 +200,28 @@ describe('functions handlers', () => {
       issuerUid: 'resident-1',
       nonce: 'fixed-nonce',
     });
+    expect(admin._rateLimitTransaction.set).toHaveBeenCalledTimes(1);
     expect(verified.ok).toBe(true);
     expect(verified.valid).toBe(true);
     expect(verified.payload).toMatchObject(signed.payload);
+  });
+
+  test('signQrTokenHandler rejects when rate limit is exceeded', async () => {
+    const admin = makeAdminMock({ rateLimitCount: 20 });
+
+    await expect(
+      signQrTokenHandler(
+        {
+          auth: { uid: 'resident-1', token: { role: 'resident' } },
+          data: {
+            villageId: 'village-a',
+            householdId: 'resident-1',
+            subjectUid: 'resident-1',
+          },
+        },
+        { qrSecret: 'test-secret', admin },
+      ),
+    ).rejects.toEqual(makeHttpsError('resource-exhausted'));
   });
 
   test('verifyQrTokenHandler rejects mismatched household', async () => {
