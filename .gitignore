@@ -22,12 +22,12 @@ Thumbs.db
 
 # Firebase
 firebase-debug.log
+firestore-debug.log
 .firebase/
 *.keystore
 *.jks
 google-services.json
 GoogleService-Info.plist
-firebase_options*.dart
 
 # Env & secrets
 .env

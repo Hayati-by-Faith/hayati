@@ -1,0 +1,4 @@
+class FinanceRecord {
+  const FinanceRecord();
+}
+

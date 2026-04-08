@@ -1,0 +1,4 @@
+class AuditService {
+  const AuditService();
+}
+

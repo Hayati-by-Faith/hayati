@@ -1,0 +1,4 @@
+class ChildrenRecord {
+  const ChildrenRecord();
+}
+

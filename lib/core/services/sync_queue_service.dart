@@ -1,0 +1,4 @@
+class SyncQueueService {
+  const SyncQueueService();
+}
+

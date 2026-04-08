@@ -1,0 +1,134 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() { return request.auth != null; }
+    function role() { return request.auth.token.role; }
+    function villageIds() { return request.auth.token.villageIds; }
+    function isInVillage(v) {
+      return isAuthenticated() && v in villageIds();
+    }
+    function isSuperAdmin() {
+      return isAuthenticated() && role() == 'super_admin';
+    }
+    function isVillageAdmin(v) {
+      return isAuthenticated() && role() == 'admin' && v in villageIds();
+    }
+    function hasRoleIn(v, roles) {
+      return isAuthenticated() && role() in roles && v in villageIds();
+    }
+    function stepUpFresh() {
+      return isAuthenticated() &&
+             request.auth.token.stepUpExpiresAt is number &&
+             request.auth.token.stepUpExpiresAt > request.time.toMillis() / 1000;
+    }
+    function isNotDeleted(r) {
+      return !('deletedAt' in r.data) || r.data.deletedAt == null;
+    }
+    function validHouseholdCreate() {
+      let d = request.resource.data;
+      return d.villageId is string &&
+             d.ownerUid == request.auth.uid &&
+             d.name is string && d.name.size() > 0 && d.name.size() < 200 &&
+             d.householdSize is int && d.householdSize > 0 && d.householdSize < 50 &&
+             d.schemaVersion is int &&
+             d.createdAt == request.time &&
+             !('role' in d) &&
+             !('qrTokenId' in d);
+    }
+
+    match /villages/{villageId} {
+      allow read: if isAuthenticated();
+      allow create: if isSuperAdmin();
+      allow update: if isSuperAdmin() ||
+                       (isVillageAdmin(villageId) && stepUpFresh() &&
+                        request.resource.data.diff(resource.data).affectedKeys()
+                          .hasOnly(['phaseConfig', 'updatedAt']));
+      allow delete: if false;
+    }
+
+    match /households/{householdId} {
+      allow read: if isNotDeleted(resource) && (
+        request.auth.uid == resource.data.ownerUid ||
+        hasRoleIn(resource.data.villageId, ['field_worker','health_worker','data_collector','admin','super_admin'])
+      );
+      allow create: if isAuthenticated() && householdId == request.auth.uid && validHouseholdCreate();
+      allow update: if isNotDeleted(resource) && (
+        (request.auth.uid == resource.data.ownerUid &&
+         !request.resource.data.diff(resource.data).affectedKeys()
+           .hasAny(['role','villageId','qrTokenId','ownerUid'])) ||
+        (hasRoleIn(resource.data.villageId, ['data_collector','admin','super_admin']) && stepUpFresh())
+      );
+      allow delete: if false;
+
+      match /sensitive/medical {
+        allow read: if hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                 ['health_worker','admin','super_admin']) && stepUpFresh();
+        allow write: if hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                  ['health_worker','admin','super_admin']) && stepUpFresh();
+      }
+      match /sensitive/children {
+        allow read: if hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                 ['data_collector','admin','super_admin']) && stepUpFresh();
+        allow write: if hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                  ['data_collector','admin','super_admin']) && stepUpFresh();
+      }
+      match /sensitive/{doc} {
+        allow read, write: if hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                        ['admin','super_admin']) && stepUpFresh();
+      }
+
+      match /consents/{consentId} {
+        allow read: if request.auth.uid == householdId ||
+                       hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                 ['admin','super_admin']);
+        allow create: if request.auth.uid == householdId ||
+                         hasRoleIn(get(/databases/$(database)/documents/households/$(householdId)).data.villageId,
+                                   ['data_collector','health_worker','admin','super_admin']);
+        allow update: if (request.auth.uid == householdId) &&
+                         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['revokedAt']);
+        allow delete: if false;
+      }
+    }
+
+    match /services/{serviceId} {
+      allow read: if isNotDeleted(resource) && isAuthenticated();
+      allow create, update: if hasRoleIn(request.resource.data.villageId, ['admin','super_admin']);
+      allow delete: if false;
+    }
+
+    match /participations/{pid} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.residentUid ||
+        hasRoleIn(resource.data.villageId, ['field_worker','health_worker','service_provider','admin','super_admin'])
+      );
+      allow create, update, delete: if false;
+    }
+
+    match /posts/{postId} {
+      allow read: if isNotDeleted(resource) && isAuthenticated();
+      allow create, update: if hasRoleIn(request.resource.data.villageId, ['admin','super_admin']);
+      allow delete: if false;
+    }
+
+    match /reports/{reportId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.reporterUid ||
+        hasRoleIn(resource.data.villageId, ['field_worker','health_worker','admin','super_admin'])
+      );
+      allow create: if isAuthenticated() && request.resource.data.villageId in villageIds();
+      allow update: if hasRoleIn(resource.data.villageId, ['field_worker','admin','super_admin']);
+      allow delete: if false;
+    }
+
+    match /audit_log/{id} {
+      allow read: if isSuperAdmin() ||
+                     (role() == 'admin' && resource.data.villageId in villageIds());
+      allow create, update, delete: if false;
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

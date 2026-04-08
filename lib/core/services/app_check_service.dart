@@ -1,0 +1,4 @@
+class AppCheckService {
+  const AppCheckService();
+}
+

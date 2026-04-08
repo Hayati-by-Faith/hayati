@@ -1,0 +1,20 @@
+{
+  "name": "hayati-rules-tests",
+  "private": true,
+  "version": "1.0.0",
+  "type": "commonjs",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore \"jest --runInBand\""
+  },
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "firebase": "^12.6.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.24.2",
+    "jest": "^29.7.0"
+  }
+}
