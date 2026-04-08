@@ -1,0 +1,4 @@
+class SkillsRecord {
+  const SkillsRecord();
+}
+

@@ -1,0 +1,4 @@
+class TrainingProgress {
+  const TrainingProgress();
+}
+

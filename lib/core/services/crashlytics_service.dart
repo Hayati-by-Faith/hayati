@@ -1,0 +1,4 @@
+class CrashlyticsService {
+  const CrashlyticsService();
+}
+

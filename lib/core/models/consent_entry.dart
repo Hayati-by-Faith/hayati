@@ -1,0 +1,4 @@
+class ConsentEntry {
+  const ConsentEntry();
+}
+

@@ -27,7 +27,6 @@ firebase-debug.log
 *.jks
 google-services.json
 GoogleService-Info.plist
-firebase_options*.dart
 
 # Env & secrets
 .env
