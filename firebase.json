@@ -1,11 +1,1 @@
-{
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "emulators": {
-    "firestore": {
-      "port": 8080
-    }
-  }
-}
+{"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"emulators":{"firestore":{"port":8080}},"flutter":{"platforms":{"android":{"default":{"projectId":"hayati-prod-20260408","appId":"1:721686602870:android:eb4a2a8a740283c26aab57","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options_staging.dart":{"projectId":"hayati-staging-20260408","configurations":{"android":"1:853595632989:android:03278f1573b8c6fd8324b4","ios":"1:853595632989:ios:4e9c6aee9e02979c8324b4"}},"lib/firebase_options_dev.dart":{"projectId":"hayati-dev-20260408","configurations":{"android":"1:348440589298:android:86eaac15d60df57f09716b","ios":"1:348440589298:ios:3507bb645adf03ab09716b"}},"lib/firebase_options_prod.dart":{"projectId":"hayati-prod-20260408","configurations":{"android":"1:721686602870:android:eb4a2a8a740283c26aab57","ios":"1:721686602870:ios:13d32d68263e5fcb6aab57"}}}}}}
