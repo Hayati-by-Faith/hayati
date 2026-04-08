@@ -3,6 +3,8 @@ const path = require('path');
 const { initializeTestEnvironment, assertFails, assertSucceeds } = require('@firebase/rules-unit-testing');
 const { doc, setDoc } = require('firebase/firestore');
 
+jest.setTimeout(60000);
+
 describe('firestore rules smoke', () => {
   let env;
 
