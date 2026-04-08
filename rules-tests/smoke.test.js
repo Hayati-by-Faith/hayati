@@ -10,6 +10,8 @@ describe('firestore rules smoke', () => {
     env = await initializeTestEnvironment({
       projectId: 'hayati-rules-smoke',
       firestore: {
+        host: '127.0.0.1',
+        port: 8080,
         rules: fs.readFileSync(path.resolve(__dirname, '../firestore.rules'), 'utf8'),
       },
     });

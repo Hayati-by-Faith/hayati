@@ -22,6 +22,7 @@ Thumbs.db
 
 # Firebase
 firebase-debug.log
+firestore-debug.log
 .firebase/
 *.keystore
 *.jks

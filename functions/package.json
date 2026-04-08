@@ -7,8 +7,15 @@
     "node": "20"
   },
   "scripts": {
-    "lint": "npx --yes eslint@9.20.0 src/**/*.js",
-    "test": "npx --yes jest@29.7.0 --runInBand"
+    "lint": "eslint src/**/*.js",
+    "test": "jest --runInBand"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^6.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.20.0",
+    "jest": "^29.7.0"
+  }
 }

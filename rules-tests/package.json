@@ -7,8 +7,14 @@
     "node": "20"
   },
   "scripts": {
-    "test": "npm exec --yes --package=@firebase/rules-unit-testing@5.0.0 --package=firebase@12.6.0 --package=jest@29.7.0 -- jest --runInBand"
+    "test": "firebase emulators:exec --only firestore \"jest --runInBand\""
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^5.0.0",
+    "firebase": "^12.6.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.24.2",
+    "jest": "^29.7.0"
+  }
 }
