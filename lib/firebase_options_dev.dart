@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyABVnhVp0oyZiPXX6bCPpHBWK4LRHHmBOg',
-    appId: '1:348440589298:android:86eaac15d60df57f09716b',
+    appId: '1:348440589298:android:948500099bff811b09716b',
     messagingSenderId: '348440589298',
     projectId: 'hayati-dev-20260408',
     storageBucket: 'hayati-dev-20260408.firebasestorage.app',
