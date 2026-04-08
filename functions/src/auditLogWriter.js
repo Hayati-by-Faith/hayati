@@ -24,6 +24,7 @@ async function auditLogWriterHandler(request, deps = {}) {
   const admin = deps.admin || getAdmin();
   const firestore = admin.firestore();
   const createdAt = deps.clock ? new Date(deps.clock()) : new Date();
+  const serverTimestamp = admin.firestore.FieldValue.serverTimestamp();
   const entry = createAuditEntry({
     actorUid,
     role,
@@ -38,7 +39,10 @@ async function auditLogWriterHandler(request, deps = {}) {
   });
 
   const ref = firestore.collection('audit_log').doc();
-  await ref.set(entry);
+  await ref.set({
+    ...entry,
+    createdAt: serverTimestamp,
+  });
 
   return {
     ok: true,

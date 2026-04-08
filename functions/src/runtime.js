@@ -1,10 +1,11 @@
 const crypto = require('crypto');
 const admin = require('firebase-admin');
 const { HttpsError, onCall } = require('firebase-functions/v2/https');
+const { defineSecret } = require('firebase-functions/params');
 
 const REGION = 'europe-west1';
 const QR_TOKEN_VERSION = 1;
-const DEFAULT_QR_SECRET = process.env.QR_HMAC_SECRET || 'hayati-development-secret';
+const qrHmacSecret = defineSecret('QR_HMAC_SECRET');
 const ALLOWED_ROLES = [
   'resident',
   'field_worker',
@@ -22,8 +23,8 @@ function getAdmin() {
   return admin;
 }
 
-function createCallable(handler) {
-  return onCall({ region: REGION }, handler);
+function createCallable(handler, secrets = []) {
+  return onCall({ region: REGION, secrets }, handler);
 }
 
 function requireAuth(request) {
@@ -57,7 +58,26 @@ function normalizeVillageIds(villageIds) {
 }
 
 function getQrSecret(deps = {}) {
-  return deps.qrSecret || DEFAULT_QR_SECRET;
+  const injectedSecret = typeof deps.qrSecret === 'string' ? deps.qrSecret.trim() : '';
+  if (injectedSecret) {
+    return injectedSecret;
+  }
+
+  const envSecret = typeof process.env.QR_HMAC_SECRET === 'string' ? process.env.QR_HMAC_SECRET.trim() : '';
+  if (envSecret) {
+    return envSecret;
+  }
+
+  try {
+    const boundSecret = qrHmacSecret.value();
+    if (typeof boundSecret === 'string' && boundSecret.trim()) {
+      return boundSecret.trim();
+    }
+  } catch {
+    // Ignore secret binding errors here and surface a clearer message below.
+  }
+
+  throw new Error('QR_HMAC_SECRET is required.');
 }
 
 function nowSeconds(clock = () => Date.now()) {
@@ -110,8 +130,15 @@ function verifyQrTokenString(token, secret) {
   if (payload.version !== QR_TOKEN_VERSION) {
     throw new HttpsError('permission-denied', 'QR token version is unsupported.');
   }
-  if (typeof payload.villageId !== 'string' || typeof payload.householdId !== 'string') {
+  if (
+    typeof payload.villageId !== 'string' ||
+    typeof payload.householdId !== 'string' ||
+    typeof payload.subjectUid !== 'string'
+  ) {
     throw new HttpsError('invalid-argument', 'QR token payload is malformed.');
+  }
+  if (payload.subjectUid !== payload.householdId) {
+    throw new HttpsError('permission-denied', 'QR token subject is invalid.');
   }
   if (typeof payload.expiresAt !== 'number' || typeof payload.issuedAt !== 'number') {
     throw new HttpsError('invalid-argument', 'QR token timestamps are malformed.');
@@ -159,4 +186,5 @@ module.exports = {
   hashValue,
   verifyQrTokenString,
   nowSeconds,
+  qrHmacSecret,
 };

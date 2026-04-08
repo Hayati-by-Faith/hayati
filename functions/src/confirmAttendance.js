@@ -5,6 +5,7 @@ const {
   getAdmin,
   hashValue,
   getQrSecret,
+  qrHmacSecret,
   requireAuth,
   requireRole,
   verifyQrTokenString,
@@ -38,18 +39,30 @@ async function confirmAttendanceHandler(request, deps = {}) {
 
   const admin = deps.admin || getAdmin();
   const firestore = admin.firestore();
+  const serviceRef = firestore.collection('services').doc(serviceId);
+  const serviceSnap = await serviceRef.get();
+  if (!serviceSnap.exists) {
+    throw new HttpsError('not-found', 'Service does not exist.');
+  }
+  const serviceData = serviceSnap.data() || {};
+  if (serviceData.villageId !== payload.villageId) {
+    throw new HttpsError('permission-denied', 'Service does not belong to the QR village.');
+  }
+
   const now = deps.clock ? new Date(deps.clock()) : new Date();
+  const serverTimestamp = admin.firestore.FieldValue.serverTimestamp();
+  const participationId = `${serviceId}_${payload.subjectUid}`;
 
   const participation = {
     villageId: payload.villageId,
     householdId: payload.householdId,
-    residentUid: payload.issuerUid,
+    residentUid: payload.subjectUid,
     serviceId,
     confirmedByUid: actorUid,
     confirmedByRole: role,
     qrTokenHash: hashValue(token),
     status: 'confirmed',
-    confirmedAt: now,
+    confirmedAt: now.toISOString(),
     schemaVersion: 1,
   };
 
@@ -61,16 +74,22 @@ async function confirmAttendanceHandler(request, deps = {}) {
     targetId: serviceId,
     details: {
       householdId: payload.householdId,
-      residentUid: payload.issuerUid,
+      residentUid: payload.subjectUid,
     },
     createdAt: now.toISOString(),
   });
 
   const batch = firestore.batch();
-  const participationRef = firestore.collection('participations').doc();
+  const participationRef = firestore.collection('participations').doc(participationId);
   const auditRef = firestore.collection('audit_log').doc();
-  batch.set(participationRef, participation);
-  batch.set(auditRef, auditEntry);
+  batch.set(participationRef, {
+    ...participation,
+    confirmedAt: serverTimestamp,
+  });
+  batch.set(auditRef, {
+    ...auditEntry,
+    createdAt: serverTimestamp,
+  });
   await batch.commit();
 
   return {
@@ -82,7 +101,7 @@ async function confirmAttendanceHandler(request, deps = {}) {
   };
 }
 
-const confirmAttendance = createCallable((request) => confirmAttendanceHandler(request));
+const confirmAttendance = createCallable((request) => confirmAttendanceHandler(request), [qrHmacSecret]);
 
 module.exports = {
   confirmAttendance,

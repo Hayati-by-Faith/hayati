@@ -3,6 +3,7 @@ const {
   createCallable,
   getQrSecret,
   requireAuth,
+  qrHmacSecret,
   verifyQrTokenString,
 } = require('./runtime');
 
@@ -31,7 +32,7 @@ async function verifyQrTokenHandler(request, deps = {}) {
   };
 }
 
-const verifyQrToken = createCallable((request) => verifyQrTokenHandler(request));
+const verifyQrToken = createCallable((request) => verifyQrTokenHandler(request), [qrHmacSecret]);
 
 module.exports = {
   verifyQrToken,

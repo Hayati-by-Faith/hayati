@@ -24,6 +24,15 @@ Deploy only after reviewing the architecture doc and running the rules test suit
 firebase deploy --only firestore:rules,firestore:indexes
 ```
 
+## Cloud Functions bootstrap
+
+- Set `QR_HMAC_SECRET` in Secret Manager before deploying the functions.
+- Bootstrap the first `super_admin` with the Admin SDK script:
+
+```bash
+node scripts/bootstrap_super_admin.js --uid <firebase-uid>
+```
+
 ## Tests
 
 ```bash
