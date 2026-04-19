@@ -57,6 +57,9 @@ jobs:
           print(f'ARB parity OK ({len(keys(en))} keys).')
           PY
 
+      - name: Verify ARB <-> localization.dart map parity
+        run: python3 scripts/check_l10n_parity.py
+
       - name: Test with coverage
         run: flutter test --coverage
 
@@ -115,3 +118,38 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+
+  build-web-preview:
+    name: Web preview (PR only)
+    runs-on: ubuntu-latest
+    needs: flutter
+    # Only run on PRs from branches in the same repo so forks cannot access
+    # the hosting service-account secret (RD-3 in plans/phase-1-closeout.md).
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Build web (dev release for preview)
+        run: flutter build web --release --dart-define=FLAVOR=dev
+
+      - name: Deploy preview channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STAGING }}
+          projectId: hayati-staging-20260408
+          target: staging
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 7d
+          entryPoint: .
