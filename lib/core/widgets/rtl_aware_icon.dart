@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RtlAwareIcon extends StatelessWidget {
-  const RtlAwareIcon(
-    this.icon, {
-    super.key,
-    this.size,
-    this.semanticLabel,
-  });
+  const RtlAwareIcon(this.icon, {super.key, this.size, this.semanticLabel});
 
   final IconData icon;
   final double? size;
@@ -17,4 +12,3 @@ class RtlAwareIcon extends StatelessWidget {
     return Icon(icon, size: size, semanticLabel: semanticLabel);
   }
 }
-

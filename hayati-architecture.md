@@ -1285,7 +1285,108 @@ Publishing a photo that shows a resident's face requires:
 
 ---
 
-## 26. Document Changelog
+## 26. Web Runtime (Phase W0)
 
-- **v2.0** (today) — Enterprise rewrite. Multi-village, 7-role RBAC, per-village phase gating, Phone OTP Day 1, App Check, signed QR, sensitive subcollections, consent ledger, append-only audit_log, observability, CI/CD, DR, a11y, legal. Supersedes v1.
+The same single codebase targets Android, iOS, and **Flutter Web** (Chrome
+desktop + mobile web). Web is a peer target for the enrollment flow — the
+public enrollment link opens the web build if the native app is not
+installed, and foundation staff can run admin screens from a laptop browser.
+
+### 26.1 Platform-specific Firebase wiring
+
+| Concern | Mobile (Android/iOS) | Web |
+|---|---|---|
+| App Check provider (debug) | Debug provider with device-specific token | `WebDebugProvider()` with `self.FIREBASE_APPCHECK_DEBUG_TOKEN = true` in `web/index.html` (set only for `localhost` and `127.0.0.1`) |
+| App Check provider (release) | Play Integrity / App Attest | `ReCaptchaV3Provider(FIREBASE_WEB_APPCHECK_SITE_KEY_*)` |
+| Crashlytics | `firebase_crashlytics` via `crashlytics_service_io.dart` | No-op logger via `crashlytics_service_web.dart` (Crashlytics has no web SDK) |
+| QR "save" action | `share_plus` → native share sheet | `HTMLAnchorElement` download via `web` package |
+| FCM | Foreground + background via OS | Service worker at `web/firebase-messaging-sw.js` (Phase 2 — placeholder today) |
+
+Platform splits live behind `if (dart.library.js_interop)` conditional
+imports — **not** `dart.library.html`, which is the deprecated DOM path
+that fails under WASM. Files that currently route on platform:
+
+- `lib/core/services/crashlytics_service.dart` → `_io.dart` / `_web.dart`
+- `lib/features/qr/screens/my_qr_screen.dart` → `qr_download.dart` (no-op)
+  / `qr_download_web.dart` (anchor + blob)
+
+### 26.2 Bootstrap and zone discipline
+
+`lib/bootstrap.dart` must call `WidgetsFlutterBinding.ensureInitialized()`
+**inside** the `runZonedGuarded` block, together with every async
+initializer (`FirebaseService.initialize`, `AppCheckService.activate`,
+`PerformanceService.activate`, `CrashlyticsService.install`). Initializing
+bindings outside the zone that later calls `runApp` produces a
+`Zone mismatch` exception on web in debug mode and inconsistently-routed
+`FlutterError.onError` callbacks in release. The zone's error handler
+delegates to `CrashlyticsService.install()`'s returned callback so the
+platform-correct implementation (Crashlytics on mobile, logger on web) is
+used without conditional imports in the bootstrap file.
+
+### 26.3 Phone OTP on web (dev): `127.0.0.1`, not `localhost`
+
+Firebase Auth silently rejects phone verification from `localhost` on web
+since mid-2024, returning `auth/invalid-app-credential` with a misleading
+"reCAPTCHA token response is either invalid or expired" message. **The web
+dev server must bind to `127.0.0.1`**, and `127.0.0.1` must appear in the
+Firebase project's Authentication → Settings → Authorized domains list for
+every environment where OTP is exercised.
+
+The checked-in `.vscode/launch.json` enforces this:
+
+```
+--web-hostname 127.0.0.1 --web-port 5000
+```
+
+The equivalent CLI invocation:
+
+```bash
+flutter run -d chrome --web-hostname 127.0.0.1 --web-port 5000 --dart-define=FLAVOR=dev
+```
+
+Real phone numbers on web always round-trip through reCAPTCHA (Enterprise
+first, v2 as fallback) — this is a Firebase Auth guarantee, not optional.
+The v2 fallback uses an auto-provisioned site key whose allowed domains are
+driven by the Authorized domains list. For SMS-less development, use
+**Authentication → Settings → Phone numbers for testing**.
+
+### 26.4 Hosting hardening
+
+`firebase.json` applies security headers to the Hosting response for all
+paths:
+
+- `Content-Security-Policy` — scopes scripts to `self`, Firebase, Google
+  reCAPTCHA, and gstatic font CDN; `connect-src` allows Firebase Auth,
+  Firestore, Functions (`europe-west1`), Storage, App Check, Google APIs
+  for reCAPTCHA; `frame-src` allows reCAPTCHA challenge.
+- `Strict-Transport-Security` — `max-age=63072000; includeSubDomains; preload`.
+- `X-Content-Type-Options: nosniff`.
+- `Referrer-Policy: strict-origin-when-cross-origin`.
+- `Permissions-Policy` — restricts camera/geolocation/microphone to `self`
+  (camera is needed for QR scan; geolocation for enrollment).
+- `X-Frame-Options: DENY`.
+
+Static assets (`.js`, `.png`, fonts) receive `Cache-Control: public,
+max-age=31536000, immutable`; the entrypoint `index.html` and `flutter_bootstrap.js`
+are `no-cache` so new deploys are picked up immediately.
+
+### 26.5 Web runtime — open items
+
+- CSP `script-src` currently allows `'unsafe-inline'` for the small App Check
+  debug-token bootstrap snippet in `index.html`. Migrate to a nonce or move
+  the snippet out of the HTML to tighten CSP before prod Hosting enforcement.
+- FCM web push (`firebase-messaging-sw.js`) is a Phase 2 placeholder — it
+  installs as a service worker but does not yet register for messages. Wire
+  `firebase_messaging` foreground/background handlers when Phase 2 lands.
+- Performance Monitoring is active on debug web for parity with mobile;
+  revisit this when we have a representative traffic sample.
+
+---
+
+## 27. Document Changelog
+
+- **v2.1** — Phase W0 web runtime documented (§26): `js_interop` conditional
+  imports, zone discipline in `bootstrap.dart`, `127.0.0.1` requirement for
+  phone OTP on dev web, Hosting CSP + security headers, FCM SW placeholder.
+- **v2.0** — Enterprise rewrite. Multi-village, 7-role RBAC, per-village phase gating, Phone OTP Day 1, App Check, signed QR, sensitive subcollections, consent ledger, append-only audit_log, observability, CI/CD, DR, a11y, legal. Supersedes v1.
 - **v1.0** — Initial product spec + Section 19 security retrofit.

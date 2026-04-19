@@ -5,4 +5,3 @@ class GpsUtils {
     return '${latitude.toStringAsFixed(5)}:${longitude.toStringAsFixed(5)}';
   }
 }
-

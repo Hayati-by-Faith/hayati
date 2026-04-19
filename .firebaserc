@@ -4,5 +4,28 @@
     "dev": "hayati-dev-20260408",
     "staging": "hayati-staging-20260408",
     "prod": "hayati-prod-20260408"
+  },
+  "targets": {
+    "hayati-dev-20260408": {
+      "hosting": {
+        "dev": [
+          "hayati-dev"
+        ]
+      }
+    },
+    "hayati-staging-20260408": {
+      "hosting": {
+        "staging": [
+          "hayati-staging"
+        ]
+      }
+    },
+    "hayati-prod-20260408": {
+      "hosting": {
+        "prod": [
+          "hayati-prod"
+        ]
+      }
+    }
   }
 }

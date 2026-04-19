@@ -21,5 +21,6 @@ sealed class BlogPost with _$BlogPost {
     required String createdBy,
   }) = _BlogPost;
 
-  factory BlogPost.fromJson(Map<String, dynamic> json) => _$BlogPostFromJson(json);
+  factory BlogPost.fromJson(Map<String, dynamic> json) =>
+      _$BlogPostFromJson(json);
 }

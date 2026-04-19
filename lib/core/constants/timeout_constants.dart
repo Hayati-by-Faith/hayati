@@ -5,4 +5,3 @@ class TimeoutConstants {
   static const Duration networkTimeout = Duration(seconds: 20);
   static const Duration syncRetryDelay = Duration(seconds: 3);
 }
-

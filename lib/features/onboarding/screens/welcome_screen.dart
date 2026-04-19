@@ -10,7 +10,13 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.l('app_title'))),
+      appBar: AppBar(
+        title: Text(
+          context.l('app_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -20,6 +26,8 @@ class WelcomeScreen extends StatelessWidget {
             Text(
               context.l('welcome_title'),
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 12),
@@ -41,4 +49,3 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
-

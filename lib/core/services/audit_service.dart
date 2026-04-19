@@ -1,4 +1,3 @@
 class AuditService {
   const AuditService();
 }
-

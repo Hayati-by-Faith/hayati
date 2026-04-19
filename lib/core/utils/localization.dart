@@ -1,10 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class _L10nValues {
-  const _L10nValues({
-    required this.ar,
-    required this.en,
-  });
+  const _L10nValues({required this.ar, required this.en});
 
   final Map<String, String> ar;
   final Map<String, String> en;
@@ -35,12 +32,21 @@ const _phase1L10n = _L10nValues(
     'consent_title': 'الموافقة والشروط',
     'consent_body': 'نجمع فقط البيانات اللازمة لتقديم منفعة واضحة للأسرة.',
     'consent_accept_button': 'موافقة ومتابعة',
+    'consent_saving': 'جارٍ حفظ الموافقة...',
+    'consent_error': 'تعذر حفظ الموافقة. حاول مرة أخرى.',
     'enrollment_title': 'استمارة التسجيل',
     'name_label': 'الاسم بالعربية',
     'address_label': 'العنوان',
     'household_size_label': 'حجم الأسرة',
     'comment_label': 'ملاحظات',
     'save_and_continue_button': 'حفظ ومتابعة',
+    'enrollment_saving': 'جارٍ حفظ بياناتك...',
+    'enrollment_error': 'حدث خطأ أثناء التسجيل. حاول مرة أخرى.',
+    'enrollment_gps_denied_title': 'تحديد الموقع غير متاح',
+    'enrollment_gps_denied_body':
+        'الموقع الجغرافي يساعدنا في تقديم خدمات أفضل لقريتك. يمكنك المتابعة بدون تحديد الموقع.',
+    'enrollment_gps_skip_button': 'متابعة بدون موقع',
+    'enrollment_gps_retry_button': 'المحاولة مرة أخرى',
     'success_title': 'اكتمل التسجيل',
     'success_subtitle': 'بطاقة QR الخاصة بك جاهزة.',
     'open_qr_button': 'فتح QR الخاص بي',
@@ -56,6 +62,8 @@ const _phase1L10n = _L10nValues(
     'select_village_hint': 'اختر سياق القرية النشط لأعمال السوبر أدمن.',
     'staff_home_title': 'الصفحة الرئيسية للموظفين',
     'super_admin_home_title': 'الصفحة الرئيسية للسوبر أدمن',
+    'not_found_title': 'الصفحة غير موجودة',
+    'not_found_body': 'الرابط الذي فتحته غير متاح داخل التطبيق.',
     'phase_locked_title': 'هذه المرحلة مغلقة',
     'phase_locked_body': 'القرية الحالية لم تفعل هذه الميزة بعد.',
     'loading_text': 'جار التحميل',
@@ -63,7 +71,8 @@ const _phase1L10n = _L10nValues(
   en: {
     'app_title': 'Hayati',
     'welcome_title': 'Welcome to Hayati',
-    'welcome_subtitle': 'A community platform for village enrollment and services.',
+    'welcome_subtitle':
+        'A community platform for village enrollment and services.',
     'welcome_cta': 'Start enrollment',
     'phone_otp_title': 'Verify phone number',
     'phone_number_label': 'Phone number',
@@ -76,12 +85,22 @@ const _phase1L10n = _L10nValues(
     'consent_body':
         'We collect only the information needed to deliver a clear benefit to your household.',
     'consent_accept_button': 'Accept and continue',
+    'consent_saving': 'Saving consent...',
+    'consent_error': 'Could not save consent. Please try again.',
     'enrollment_title': 'Enrollment form',
     'name_label': 'Name in Arabic',
     'address_label': 'Address',
     'household_size_label': 'Household size',
     'comment_label': 'Comment',
     'save_and_continue_button': 'Save and continue',
+    'enrollment_saving': 'Saving your information...',
+    'enrollment_error':
+        'An error occurred during enrollment. Please try again.',
+    'enrollment_gps_denied_title': 'Location unavailable',
+    'enrollment_gps_denied_body':
+        'Location helps us deliver better services to your village. You can continue without it.',
+    'enrollment_gps_skip_button': 'Continue without location',
+    'enrollment_gps_retry_button': 'Try again',
     'success_title': 'Enrollment complete',
     'success_subtitle': 'Your QR identity is ready.',
     'open_qr_button': 'Open my QR',
@@ -99,8 +118,11 @@ const _phase1L10n = _L10nValues(
         'Select the active village context for super admin work.',
     'staff_home_title': 'Staff home',
     'super_admin_home_title': 'Super admin home',
+    'not_found_title': 'Page not found',
+    'not_found_body': 'The link you opened is not available in the app.',
     'phase_locked_title': 'This phase is locked',
-    'phase_locked_body': 'The current village has not enabled this feature yet.',
+    'phase_locked_body':
+        'The current village has not enabled this feature yet.',
     'loading_text': 'Loading',
   },
 );
@@ -110,4 +132,3 @@ extension LocalizationX on BuildContext {
     return _phase1L10n.valueFor(Localizations.maybeLocaleOf(this), key);
   }
 }
-

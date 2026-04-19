@@ -14,7 +14,11 @@ class VillagePickerScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l('village_picker_title')),
+        title: Text(
+          context.l('village_picker_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -30,7 +34,8 @@ class VillagePickerScreen extends ConsumerWidget {
             Expanded(
               child: ListView.separated(
                 itemCount: villages.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final village = villages[index];
                   final isSelected = selectedVillage?.id == village.id;
@@ -50,7 +55,8 @@ class VillagePickerScreen extends ConsumerWidget {
                           ? const Icon(Icons.check_circle)
                           : const Icon(Icons.radio_button_unchecked),
                       onTap: () {
-                        ref.read(activeVillageProvider.notifier).state = village;
+                        ref.read(activeVillageProvider.notifier).state =
+                            village;
                       },
                     ),
                   );

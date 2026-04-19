@@ -27,6 +27,11 @@ service cloud.firestore {
     }
     function validHouseholdCreate() {
       let d = request.resource.data;
+      let gpsOk = !('gps' in d) || d.gps == null ||
+                  (d.gps is latlng &&
+                   'geohash' in d &&
+                   d.geohash is string &&
+                   d.geohash.size() > 0);
       return d.villageId is string &&
              d.ownerUid == request.auth.uid &&
              d.name is string && d.name.size() > 0 && d.name.size() < 200 &&
@@ -34,7 +39,8 @@ service cloud.firestore {
              d.schemaVersion is int &&
              d.createdAt == request.time &&
              !('role' in d) &&
-             !('qrTokenId' in d);
+             !('qrTokenId' in d) &&
+             gpsOk;
     }
 
     match /villages/{villageId} {

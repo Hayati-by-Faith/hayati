@@ -12,9 +12,8 @@ enum AppFlavor {
   }
 
   String get label => switch (this) {
-        AppFlavor.dev => 'dev',
-        AppFlavor.staging => 'staging',
-        AppFlavor.prod => 'prod',
-      };
+    AppFlavor.dev => 'dev',
+    AppFlavor.staging => 'staging',
+    AppFlavor.prod => 'prod',
+  };
 }
-

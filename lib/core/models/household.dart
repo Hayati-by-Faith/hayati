@@ -23,5 +23,6 @@ sealed class Household with _$Household {
     required DateTime updatedAt,
   }) = _Household;
 
-  factory Household.fromJson(Map<String, dynamic> json) => _$HouseholdFromJson(json);
+  factory Household.fromJson(Map<String, dynamic> json) =>
+      _$HouseholdFromJson(json);
 }

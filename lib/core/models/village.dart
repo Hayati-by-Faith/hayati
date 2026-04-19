@@ -22,5 +22,6 @@ sealed class Village with _$Village {
     required bool isActive,
   }) = _Village;
 
-  factory Village.fromJson(Map<String, dynamic> json) => _$VillageFromJson(json);
+  factory Village.fromJson(Map<String, dynamic> json) =>
+      _$VillageFromJson(json);
 }

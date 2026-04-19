@@ -2,50 +2,175 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'plans/**'
+      - '.gitignore'
+      - 'LICENSE'
   push:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'plans/**'
+      - '.gitignore'
+      - 'LICENSE'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.41.3
 
 jobs:
   flutter:
+    name: Flutter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
-      - run: flutter pub get
-      - run: flutter analyze --fatal-warnings
-      - run: flutter test --coverage
-      - run: flutter build apk --flavor dev --debug
+          cache: true
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Format check
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-warnings --fatal-infos
+
+      - name: Verify ARB key parity (ar <-> en)
+        run: |
+          python3 - <<'PY'
+          import json, sys, pathlib
+          en = json.loads(pathlib.Path('lib/l10n/app_en.arb').read_text(encoding='utf-8'))
+          ar = json.loads(pathlib.Path('lib/l10n/app_ar.arb').read_text(encoding='utf-8'))
+          def keys(d):
+              return {k for k in d.keys() if not k.startswith('@')}
+          missing_in_ar = sorted(keys(en) - keys(ar))
+          missing_in_en = sorted(keys(ar) - keys(en))
+          ok = True
+          if missing_in_ar:
+              ok = False
+              print('Missing in app_ar.arb:', *missing_in_ar, sep='\n  ')
+          if missing_in_en:
+              ok = False
+              print('Missing in app_en.arb:', *missing_in_en, sep='\n  ')
+          if not ok:
+              sys.exit(1)
+          print(f'ARB parity OK ({len(keys(en))} keys).')
+          PY
+
+      - name: Verify ARB <-> localization.dart map parity
+        run: python3 scripts/check_l10n_parity.py
+
+      - name: Test with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-coverage
+          path: coverage/lcov.info
+          if-no-files-found: warn
+
+      - name: Build APK (dev debug)
+        run: flutter build apk --flavor dev --debug
+
+      - name: Build web (dev release)
+        run: flutter build web --release --dart-define=FLAVOR=dev
+
+      # Same bundle as `build-web-preview` — avoids a second full web compile on PRs.
+      - name: Upload web bundle for PR preview
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dev-release
+          path: build/web/
+          retention-days: 3
+          if-no-files-found: error
 
   rules:
+    name: Firestore rules tests
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: rules-tests
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: rules-tests/package-lock.json
+
       - run: npm ci
       - run: npm test
 
   functions:
+    name: Cloud Functions
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: functions
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
       - run: npm ci
       - run: npm run lint
       - run: npm test
+
+  build-web-preview:
+    name: Web preview (PR only)
+    runs-on: ubuntu-latest
+    needs: flutter
+    # Only run on PRs from branches in the same repo so forks cannot access
+    # the hosting service-account secret (RD-3 in plans/phase-1-closeout.md).
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-dev-release
+          path: build/web
+
+      - name: Verify web bundle for hosting
+        run: test -f build/web/index.html
+
+      - name: Deploy preview channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STAGING }}
+          projectId: hayati-staging-20260408
+          target: staging
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 7d
+          entryPoint: .

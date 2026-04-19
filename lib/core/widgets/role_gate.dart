@@ -24,4 +24,3 @@ class RoleGate extends ConsumerWidget {
     return fallback ?? const SizedBox.shrink();
   }
 }
-

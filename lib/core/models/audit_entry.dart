@@ -1,4 +1,3 @@
 class AuditEntry {
   const AuditEntry();
 }
-

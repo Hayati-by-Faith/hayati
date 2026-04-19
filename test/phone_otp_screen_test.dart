@@ -13,4 +13,3 @@ void main() {
     expect(find.text('إرسال رمز التحقق'), findsOneWidget);
   });
 }
-

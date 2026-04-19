@@ -3,17 +3,11 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../core/utils/localization.dart';
 
-typedef ScannerBuilder = Widget Function(
-  BuildContext context,
-  void Function(String code) onDetect,
-);
+typedef ScannerBuilder =
+    Widget Function(BuildContext context, void Function(String code) onDetect);
 
 class QrScannerScreen extends StatelessWidget {
-  const QrScannerScreen({
-    super.key,
-    this.onDetect,
-    this.scannerBuilder,
-  });
+  const QrScannerScreen({super.key, this.onDetect, this.scannerBuilder});
 
   final void Function(String code)? onDetect;
   final ScannerBuilder? scannerBuilder;
@@ -22,7 +16,13 @@ class QrScannerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final detect = onDetect ?? (_) {};
     return Scaffold(
-      appBar: AppBar(title: Text(context.l('scanner_title'))),
+      appBar: AppBar(
+        title: Text(
+          context.l('scanner_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: Column(
         children: [
           Padding(
@@ -35,7 +35,8 @@ class QrScannerScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: scannerBuilder?.call(context, detect) ??
+            child:
+                scannerBuilder?.call(context, detect) ??
                 MobileScanner(
                   onDetect: (capture) {
                     final code = capture.barcodes.isEmpty
