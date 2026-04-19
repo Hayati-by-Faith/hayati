@@ -90,6 +90,18 @@ jobs:
       - name: Build web (dev release)
         run: flutter build web --release --dart-define=FLAVOR=dev
 
+      # Same bundle as `build-web-preview` — avoids a second full web compile on PRs.
+      - name: Upload web bundle for PR preview
+        if: >-
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dev-release
+          path: build/web/
+          retention-days: 3
+          if-no-files-found: error
+
   rules:
     name: Firestore rules tests
     runs-on: ubuntu-latest
@@ -144,17 +156,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - uses: actions/download-artifact@v4
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
-          cache: true
+          name: web-dev-release
+          path: build/web
 
-      - name: Pub get
-        run: flutter pub get
-
-      - name: Build web (dev release for preview)
-        run: flutter build web --release --dart-define=FLAVOR=dev
+      - name: Verify web bundle for hosting
+        run: test -f build/web/index.html
 
       - name: Deploy preview channel
         uses: FirebaseExtended/action-hosting-deploy@v0
