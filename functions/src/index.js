@@ -3,6 +3,7 @@ const { signQrToken, signQrTokenHandler } = require('./signQrToken');
 const { verifyQrToken, verifyQrTokenHandler } = require('./verifyQrToken');
 const { confirmAttendance, confirmAttendanceHandler } = require('./confirmAttendance');
 const { auditLogWriter, auditLogWriterHandler } = require('./auditLogWriter');
+const { createHousehold, createHouseholdHandler } = require('./enrollment');
 
 module.exports = {
   setUserClaims,
@@ -15,4 +16,6 @@ module.exports = {
   confirmAttendanceHandler,
   auditLogWriter,
   auditLogWriterHandler,
+  createHousehold,
+  createHouseholdHandler,
 };

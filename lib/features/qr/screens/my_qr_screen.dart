@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/constants/village_constants.dart';
+import '../../../core/providers/qr_token_provider.dart';
 import '../../../core/services/qr_service.dart';
 import '../../../core/utils/localization.dart';
 import '../../../core/widgets/big_button.dart';
@@ -12,17 +15,17 @@ import 'qr_download.dart'
 
 typedef QrBytesHandler = Future<void> Function(Uint8List bytes);
 
-class MyQrScreen extends StatefulWidget {
+class MyQrScreen extends ConsumerStatefulWidget {
   const MyQrScreen({super.key, this.onSaveQrBytes, this.qrKey});
 
   final QrBytesHandler? onSaveQrBytes;
   final GlobalKey? qrKey;
 
   @override
-  State<MyQrScreen> createState() => _MyQrScreenState();
+  ConsumerState<MyQrScreen> createState() => _MyQrScreenState();
 }
 
-class _MyQrScreenState extends State<MyQrScreen> {
+class _MyQrScreenState extends ConsumerState<MyQrScreen> {
   late final GlobalKey _qrKey = widget.qrKey ?? GlobalKey();
 
   Future<Uint8List> _captureQrBytes() async {
@@ -69,13 +72,27 @@ class _MyQrScreenState extends State<MyQrScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final payload = const QrService().buildResidentPayload(
-      villageId: 'abusir',
-      householdId: 'household-demo',
-    );
+    // Prefer the signed QR token issued by `createHousehold` (stored in
+    // `lastQrTokenProvider`). Falls back to an unsigned `hayati://qr?...`
+    // payload for development / cold-start cases where the signed token is
+    // not yet in memory. The fallback will be replaced in Phase 2 once the
+    // token is persisted under `households/{uid}/sensitive/qr`.
+    final signedToken = ref.watch(lastQrTokenProvider);
+    final payload = signedToken != null && signedToken.isNotEmpty
+        ? signedToken
+        : const QrService().buildResidentPayload(
+            villageId: VillageConstants.defaultVillageId,
+            householdId: 'household-demo',
+          );
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.l('qr_title'))),
+      appBar: AppBar(
+        title: Text(
+          context.l('qr_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

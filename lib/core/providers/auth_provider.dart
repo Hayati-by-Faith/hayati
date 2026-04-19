@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
+import '../constants/business_constants.dart';
 import '../services/auth_service.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService(FirebaseAuth.instance);
+});
+
+final authStateChangesProvider = StreamProvider<User?>((ref) {
+  return ref.watch(authServiceProvider).authStateChanges();
 });
 
 class AuthSession {
@@ -17,7 +21,7 @@ class AuthSession {
 
   const AuthSession.guest()
       : uid = null,
-        role = 'resident',
+        role = BusinessConstants.defaultRole,
         isAuthenticated = false;
 
   final String? uid;
@@ -25,6 +29,15 @@ class AuthSession {
   final bool isAuthenticated;
 }
 
-final authSessionProvider = StateProvider<AuthSession>((ref) {
-  return const AuthSession.guest();
+final authSessionProvider = Provider<AuthSession>((ref) {
+  final user = ref.watch(authStateChangesProvider).asData?.value ??
+      FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    return const AuthSession.guest();
+  }
+  return AuthSession(
+    uid: user.uid,
+    role: BusinessConstants.defaultRole,
+    isAuthenticated: true,
+  );
 });

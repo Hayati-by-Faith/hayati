@@ -22,7 +22,7 @@ class HayatiApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: BusinessConstants.appName,
-      locale: const Locale('ar'),
+      locale: const Locale(BusinessConstants.defaultLocaleCode),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
