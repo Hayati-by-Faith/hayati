@@ -47,4 +47,13 @@ flutter build web --release --dart-define=FLAVOR=prod \
   --dart-define=FIREBASE_WEB_MEASUREMENT_ID_PROD="${FIREBASE_WEB_MEASUREMENT_ID_PROD:-}" \
   --dart-define=FIREBASE_WEB_APPCHECK_SITE_KEY="${FIREBASE_WEB_APPCHECK_SITE_KEY_PROD:?Missing FIREBASE_WEB_APPCHECK_SITE_KEY_PROD}"
 
-firebase deploy --only firestore:rules,firestore:indexes,functions,hosting -P prod
+firebase deploy --only firestore:rules,firestore:indexes,functions,hosting:prod -P prod
+
+# Tag the rules + web bundle for auditable rollback (§26 hardening, CLAUDE.md
+# deployment policy: "Always tag firestore.rules before deploy for rollback").
+deploy_ts="$(date -u +%Y%m%d-%H%M%SZ)"
+rules_tag="firestore-rules-prod-${deploy_ts}"
+web_tag="web-prod-${deploy_ts}"
+git tag -a "${rules_tag}" -m "Prod deploy ${deploy_ts} — firestore.rules" 2>/dev/null || true
+git tag -a "${web_tag}" -m "Prod deploy ${deploy_ts} — web bundle" 2>/dev/null || true
+echo "Tagged prod deploy: ${rules_tag} and ${web_tag}"
