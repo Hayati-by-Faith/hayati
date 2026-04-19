@@ -27,10 +27,7 @@ enum LocationCaptureStatus {
 }
 
 class LocationCaptureResult {
-  const LocationCaptureResult._({
-    required this.status,
-    this.capture,
-  });
+  const LocationCaptureResult._({required this.status, this.capture});
 
   factory LocationCaptureResult.captured(LocationCapture capture) =>
       LocationCaptureResult._(

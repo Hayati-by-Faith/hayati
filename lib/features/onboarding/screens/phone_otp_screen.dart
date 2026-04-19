@@ -46,7 +46,9 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
     });
 
     try {
-      await ref.read(authServiceProvider).sendOtp(
+      await ref
+          .read(authServiceProvider)
+          .sendOtp(
             phoneNumber: _phoneController.text.trim(),
             codeSent: (verificationId) {
               setState(() {
@@ -60,7 +62,8 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
                 error: error,
               );
               setState(() {
-                _errorMessage = error.message ??
+                _errorMessage =
+                    error.message ??
                     'Phone verification failed (${error.code})';
               });
             },
@@ -99,7 +102,9 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
     });
 
     try {
-      await ref.read(authServiceProvider).confirmOtp(
+      await ref
+          .read(authServiceProvider)
+          .confirmOtp(
             verificationId: verificationId,
             smsCode: _codeController.text.trim(),
           );

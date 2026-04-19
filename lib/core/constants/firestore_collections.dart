@@ -9,4 +9,3 @@ class FirestoreCollections {
   static const reports = 'reports';
   static const auditLog = 'audit_log';
 }
-

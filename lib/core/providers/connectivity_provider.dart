@@ -9,4 +9,3 @@ final connectivityServiceProvider = Provider<ConnectivityService>((ref) {
 final connectivityProvider = StreamProvider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).changes;
 });
-

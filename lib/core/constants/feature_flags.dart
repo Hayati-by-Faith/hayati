@@ -8,4 +8,3 @@ class FeatureFlags {
   static const String phase5CommunityWatch = 'phase_5_community_watch';
   static const String phase6Training = 'phase_6_training';
 }
-

@@ -1,4 +1,3 @@
 class MedicalRecord {
   const MedicalRecord();
 }
-

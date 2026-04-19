@@ -1,4 +1,3 @@
 class ConsentService {
   const ConsentService();
 }
-

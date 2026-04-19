@@ -1,4 +1,3 @@
 class NotificationService {
   const NotificationService();
 }
-

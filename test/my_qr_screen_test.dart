@@ -21,10 +21,7 @@ void main() {
     final qrKey = GlobalKey();
     late Uint8List capturedBytes;
 
-    await pumpLocalizedScreen(
-      tester,
-      MyQrScreen(qrKey: qrKey),
-    );
+    await pumpLocalizedScreen(tester, MyQrScreen(qrKey: qrKey));
 
     await tester.runAsync(() async {
       capturedBytes = await captureQrBytes(qrKey);
@@ -33,4 +30,3 @@ void main() {
     expect(capturedBytes, isNotEmpty);
   });
 }
-

@@ -1,4 +1,3 @@
 class TrainingProgress {
   const TrainingProgress();
 }
-

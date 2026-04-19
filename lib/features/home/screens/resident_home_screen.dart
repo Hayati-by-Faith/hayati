@@ -42,11 +42,7 @@ class ResidentHomeScreen extends StatelessWidget {
             if (breakpoint == Breakpoint.phone) {
               return ListView(
                 padding: const EdgeInsets.all(16),
-                children: [
-                  qrCard,
-                  const SizedBox(height: 16),
-                  blogCard,
-                ],
+                children: [qrCard, const SizedBox(height: 16), blogCard],
               );
             }
             return Padding(

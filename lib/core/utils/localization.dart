@@ -1,10 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class _L10nValues {
-  const _L10nValues({
-    required this.ar,
-    required this.en,
-  });
+  const _L10nValues({required this.ar, required this.en});
 
   final Map<String, String> ar;
   final Map<String, String> en;
@@ -74,7 +71,8 @@ const _phase1L10n = _L10nValues(
   en: {
     'app_title': 'Hayati',
     'welcome_title': 'Welcome to Hayati',
-    'welcome_subtitle': 'A community platform for village enrollment and services.',
+    'welcome_subtitle':
+        'A community platform for village enrollment and services.',
     'welcome_cta': 'Start enrollment',
     'phone_otp_title': 'Verify phone number',
     'phone_number_label': 'Phone number',
@@ -123,7 +121,8 @@ const _phase1L10n = _L10nValues(
     'not_found_title': 'Page not found',
     'not_found_body': 'The link you opened is not available in the app.',
     'phase_locked_title': 'This phase is locked',
-    'phase_locked_body': 'The current village has not enabled this feature yet.',
+    'phase_locked_body':
+        'The current village has not enabled this feature yet.',
     'loading_text': 'Loading',
   },
 );
@@ -133,4 +132,3 @@ extension LocalizationX on BuildContext {
     return _phase1L10n.valueFor(Localizations.maybeLocaleOf(this), key);
   }
 }
-

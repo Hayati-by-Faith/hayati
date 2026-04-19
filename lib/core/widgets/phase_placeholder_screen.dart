@@ -20,11 +20,7 @@ class PhasePlaceholderScreen extends StatelessWidget {
     final appBarTitle = context.l(titleKey ?? 'phase_locked_title');
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          appBarTitle,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(appBarTitle, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
       body: SafeArea(
         child: Padding(

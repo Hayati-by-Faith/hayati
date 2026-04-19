@@ -27,4 +27,3 @@ class AudioPlayerCard extends StatelessWidget {
     );
   }
 }
-

@@ -28,11 +28,7 @@ Breakpoint breakpointForWidth(double width) {
 /// Picks a value per [Breakpoint]. `phone` is required; `tablet` and
 /// `desktop` fall back to the next-narrower provided value.
 class ResponsiveValue<T> {
-  const ResponsiveValue({
-    required this.phone,
-    this.tablet,
-    this.desktop,
-  });
+  const ResponsiveValue({required this.phone, this.tablet, this.desktop});
 
   final T phone;
   final T? tablet;

@@ -174,10 +174,7 @@ class _EnrollmentScreenState extends ConsumerState<EnrollmentScreen> {
     };
 
     try {
-      const AppLogger().log(
-        'enrollment_started',
-        level: AppLogLevel.info,
-      );
+      const AppLogger().log('enrollment_started', level: AppLogLevel.info);
 
       final functions = FirebaseFunctions.instanceFor(
         region: VillageConstants.functionsRegion,

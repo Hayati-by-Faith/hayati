@@ -3,7 +3,8 @@ class ImageUtils {
 
   static bool isSupportedExtension(String path) {
     final lower = path.toLowerCase();
-    return lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg');
+    return lower.endsWith('.png') ||
+        lower.endsWith('.jpg') ||
+        lower.endsWith('.jpeg');
   }
 }
-

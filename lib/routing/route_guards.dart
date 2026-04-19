@@ -5,10 +5,7 @@ class RouteGuards {
   static const String phoneOtpRoute = '/phone-otp';
   static const String homeRoute = '/home';
 
-  static const Set<String> publicRoutes = <String>{
-    welcomeRoute,
-    phoneOtpRoute,
-  };
+  static const Set<String> publicRoutes = <String>{welcomeRoute, phoneOtpRoute};
 
   static bool isPhaseEnabled(bool enabled) => enabled;
 }

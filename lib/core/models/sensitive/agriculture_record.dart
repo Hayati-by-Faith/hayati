@@ -1,4 +1,3 @@
 class AgricultureRecord {
   const AgricultureRecord();
 }
-

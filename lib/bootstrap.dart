@@ -13,17 +13,20 @@ import 'core/services/performance_service.dart';
 
 Future<void> bootstrap(AppFlavor flavor, Widget app) async {
   late final ZoneErrorHandler zoneErrorHandler;
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await FirebaseService.initialize(flavor);
-    await FirebaseAuth.instance.setLanguageCode(
-      BusinessConstants.defaultLocaleCode,
-    );
-    await AppCheckService.activate(flavor);
-    await PerformanceService.activate();
-    zoneErrorHandler = await CrashlyticsService.install();
-    runApp(ProviderScope(child: app));
-  }, (error, stack) {
-    zoneErrorHandler(error, stack);
-  });
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await FirebaseService.initialize(flavor);
+      await FirebaseAuth.instance.setLanguageCode(
+        BusinessConstants.defaultLocaleCode,
+      );
+      await AppCheckService.activate(flavor);
+      await PerformanceService.activate();
+      zoneErrorHandler = await CrashlyticsService.install();
+      runApp(ProviderScope(child: app));
+    },
+    (error, stack) {
+      zoneErrorHandler(error, stack);
+    },
+  );
 }

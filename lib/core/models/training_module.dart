@@ -1,4 +1,3 @@
 class TrainingModule {
   const TrainingModule();
 }
-

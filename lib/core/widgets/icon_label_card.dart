@@ -50,4 +50,3 @@ class IconLabelCard extends StatelessWidget {
     );
   }
 }
-

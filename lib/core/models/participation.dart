@@ -1,4 +1,3 @@
 class Participation {
   const Participation();
 }
-

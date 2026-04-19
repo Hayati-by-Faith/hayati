@@ -6,8 +6,10 @@ import '../config/flavor_config.dart';
 class AppCheckService {
   const AppCheckService();
 
-  static const String _webSiteKey =
-      String.fromEnvironment('FIREBASE_WEB_APPCHECK_SITE_KEY', defaultValue: '');
+  static const String _webSiteKey = String.fromEnvironment(
+    'FIREBASE_WEB_APPCHECK_SITE_KEY',
+    defaultValue: '',
+  );
 
   static Future<void> activate(AppFlavor flavor) async {
     if (kIsWeb) {
@@ -18,9 +20,7 @@ class AppCheckService {
                     'FIREBASE_WEB_APPCHECK_SITE_KEY is required for non-debug web builds',
                   )
                 : ReCaptchaV3Provider(_webSiteKey));
-      await FirebaseAppCheck.instance.activate(
-        providerWeb: webProvider,
-      );
+      await FirebaseAppCheck.instance.activate(providerWeb: webProvider);
       return;
     }
 

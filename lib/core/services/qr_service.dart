@@ -8,4 +8,3 @@ class QrService {
     return 'hayati://qr?villageId=$villageId&householdId=$householdId';
   }
 }
-

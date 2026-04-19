@@ -21,10 +21,7 @@ class VillageService {
           'phase_6_training': false,
         },
         featureKillSwitch: false,
-        stats: {
-          'enrolledHouseholds': 0,
-          'activeUsers30d': 0,
-        },
+        stats: {'enrolledHouseholds': 0, 'activeUsers30d': 0},
         createdBy: 'bootstrap',
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),

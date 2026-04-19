@@ -20,5 +20,6 @@ sealed class ServiceEvent with _$ServiceEvent {
     required DateTime updatedAt,
   }) = _ServiceEvent;
 
-  factory ServiceEvent.fromJson(Map<String, dynamic> json) => _$ServiceEventFromJson(json);
+  factory ServiceEvent.fromJson(Map<String, dynamic> json) =>
+      _$ServiceEventFromJson(json);
 }

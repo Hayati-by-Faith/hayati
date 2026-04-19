@@ -30,9 +30,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     refreshListenable: refresh,
     redirect: (context, state) {
       final isAuthenticated = FirebaseAuth.instance.currentUser != null;
-      final isPublic = RouteGuards.publicRoutes.contains(
-        state.matchedLocation,
-      );
+      final isPublic = RouteGuards.publicRoutes.contains(state.matchedLocation);
       if (isAuthenticated && isPublic) {
         return RouteGuards.homeRoute;
       }
@@ -45,10 +43,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       return Scaffold(
         appBar: AppBar(title: Text(context.l('not_found_title'))),
         body: Center(
-          child: Text(
-            context.l('not_found_body'),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(context.l('not_found_body'), textAlign: TextAlign.center),
         ),
       );
     },
@@ -73,10 +68,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/enrollment/success',
         builder: (context, state) => const EnrollmentSuccessScreen(),
       ),
-      GoRoute(
-        path: '/qr',
-        builder: (context, state) => const MyQrScreen(),
-      ),
+      GoRoute(path: '/qr', builder: (context, state) => const MyQrScreen()),
       GoRoute(
         path: '/scan',
         builder: (context, state) => const QrScannerScreen(),
@@ -90,8 +82,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             'field_worker' ||
             'health_worker' ||
             'data_collector' ||
-            'service_provider' =>
-              const StaffHomeScreen(),
+            'service_provider' => const StaffHomeScreen(),
             _ => const ResidentHomeScreen(),
           };
         },

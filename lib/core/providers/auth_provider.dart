@@ -20,9 +20,9 @@ class AuthSession {
   });
 
   const AuthSession.guest()
-      : uid = null,
-        role = BusinessConstants.defaultRole,
-        isAuthenticated = false;
+    : uid = null,
+      role = BusinessConstants.defaultRole,
+      isAuthenticated = false;
 
   final String? uid;
   final String role;
@@ -30,7 +30,8 @@ class AuthSession {
 }
 
 final authSessionProvider = Provider<AuthSession>((ref) {
-  final user = ref.watch(authStateChangesProvider).asData?.value ??
+  final user =
+      ref.watch(authStateChangesProvider).asData?.value ??
       FirebaseAuth.instance.currentUser;
   if (user == null) {
     return const AuthSession.guest();

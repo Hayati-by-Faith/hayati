@@ -23,4 +23,3 @@ final phaseEnabledProvider = Provider.family<bool, String>((ref, key) {
 final phase1Provider = Provider<bool>((ref) {
   return ref.watch(phaseEnabledProvider(FeatureFlags.phase1Enrollment));
 });
-

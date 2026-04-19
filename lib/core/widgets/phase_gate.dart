@@ -49,4 +49,3 @@ class PhaseGate extends ConsumerWidget {
         );
   }
 }
-

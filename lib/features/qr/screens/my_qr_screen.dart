@@ -10,8 +10,7 @@ import '../../../core/services/qr_service.dart';
 import '../../../core/utils/localization.dart';
 import '../../../core/widgets/big_button.dart';
 import 'qr_capture.dart';
-import 'qr_download.dart'
-    if (dart.library.js_interop) 'qr_download_web.dart';
+import 'qr_download.dart' if (dart.library.js_interop) 'qr_download_web.dart';
 
 typedef QrBytesHandler = Future<void> Function(Uint8List bytes);
 
@@ -41,11 +40,7 @@ class _MyQrScreenState extends ConsumerState<MyQrScreen> {
     await SharePlus.instance.share(
       ShareParams(
         files: [
-          XFile.fromData(
-            bytes,
-            name: 'hayati-qr.png',
-            mimeType: 'image/png',
-          ),
+          XFile.fromData(bytes, name: 'hayati-qr.png', mimeType: 'image/png'),
         ],
       ),
     );
@@ -65,9 +60,9 @@ class _MyQrScreenState extends ConsumerState<MyQrScreen> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l('qr_save_button'))),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l('qr_save_button'))));
   }
 
   @override

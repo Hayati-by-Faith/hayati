@@ -9,10 +9,7 @@ import 'gen_l10n/app_localizations.dart';
 import 'routing/app_router.dart';
 
 class HayatiApp extends ConsumerWidget {
-  const HayatiApp({
-    super.key,
-    required this.config,
-  });
+  const HayatiApp({super.key, required this.config});
 
   final AppConfig config;
 
@@ -41,4 +38,3 @@ class HayatiApp extends ConsumerWidget {
     );
   }
 }
-

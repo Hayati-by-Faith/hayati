@@ -26,4 +26,3 @@ class SuperAdminHomeScreen extends StatelessWidget {
     );
   }
 }
-

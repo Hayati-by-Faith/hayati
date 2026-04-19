@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StepUpGate extends StatelessWidget {
-  const StepUpGate({
-    super.key,
-    required this.child,
-  });
+  const StepUpGate({super.key, required this.child});
 
   final Widget child;
 
@@ -13,4 +10,3 @@ class StepUpGate extends StatelessWidget {
     return child;
   }
 }
-

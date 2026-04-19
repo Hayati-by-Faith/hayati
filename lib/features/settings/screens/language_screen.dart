@@ -8,4 +8,3 @@ class LanguageScreen extends StatelessWidget {
     return const Scaffold(body: SizedBox.shrink());
   }
 }
-
