@@ -6,46 +6,112 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: 3.41.3
+
 jobs:
   flutter:
+    name: Flutter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
-      - run: flutter pub get
-      - run: flutter analyze --fatal-warnings
-      - run: flutter test --coverage
-      - run: flutter build apk --flavor dev --debug
+          cache: true
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Format check
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-warnings --fatal-infos
+
+      - name: Verify ARB key parity (ar <-> en)
+        run: |
+          python3 - <<'PY'
+          import json, sys, pathlib
+          en = json.loads(pathlib.Path('lib/l10n/app_en.arb').read_text(encoding='utf-8'))
+          ar = json.loads(pathlib.Path('lib/l10n/app_ar.arb').read_text(encoding='utf-8'))
+          def keys(d):
+              return {k for k in d.keys() if not k.startswith('@')}
+          missing_in_ar = sorted(keys(en) - keys(ar))
+          missing_in_en = sorted(keys(ar) - keys(en))
+          ok = True
+          if missing_in_ar:
+              ok = False
+              print('Missing in app_ar.arb:', *missing_in_ar, sep='\n  ')
+          if missing_in_en:
+              ok = False
+              print('Missing in app_en.arb:', *missing_in_en, sep='\n  ')
+          if not ok:
+              sys.exit(1)
+          print(f'ARB parity OK ({len(keys(en))} keys).')
+          PY
+
+      - name: Test with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-coverage
+          path: coverage/lcov.info
+          if-no-files-found: warn
+
+      - name: Build APK (dev debug)
+        run: flutter build apk --flavor dev --debug
+
+      - name: Build web (dev release)
+        run: flutter build web --release --dart-define=FLAVOR=dev
 
   rules:
+    name: Firestore rules tests
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: rules-tests
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: rules-tests/package-lock.json
+
       - run: npm ci
       - run: npm test
 
   functions:
+    name: Cloud Functions
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: functions
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
       - run: npm ci
       - run: npm run lint
       - run: npm test

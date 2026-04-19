@@ -1,47 +1,64 @@
-import 'dart:io';
-import 'dart:ui' as ui;
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/services/qr_service.dart';
 import '../../../core/utils/localization.dart';
 import '../../../core/widgets/big_button.dart';
+import 'qr_capture.dart';
+import 'qr_download.dart'
+    if (dart.library.js_interop) 'qr_download_web.dart';
+
+typedef QrBytesHandler = Future<void> Function(Uint8List bytes);
 
 class MyQrScreen extends StatefulWidget {
-  const MyQrScreen({super.key});
+  const MyQrScreen({super.key, this.onSaveQrBytes, this.qrKey});
+
+  final QrBytesHandler? onSaveQrBytes;
+  final GlobalKey? qrKey;
 
   @override
   State<MyQrScreen> createState() => _MyQrScreenState();
 }
 
 class _MyQrScreenState extends State<MyQrScreen> {
-  final _qrKey = GlobalKey();
+  late final GlobalKey _qrKey = widget.qrKey ?? GlobalKey();
 
-  Future<File> _captureQr() async {
-    final boundary =
-        _qrKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-    final image = await boundary.toImage(pixelRatio: 3);
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    final bytes = byteData!.buffer.asUint8List();
-    final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/hayati-qr.png');
-    await file.writeAsBytes(bytes, flush: true);
-    return file;
+  Future<Uint8List> _captureQrBytes() async {
+    return captureQrBytes(_qrKey);
   }
 
   Future<void> _shareQr() async {
-    final file = await _captureQr();
+    final bytes = await _captureQrBytes();
+    await _shareQrBytes(bytes);
+  }
+
+  Future<void> _shareQrBytes(Uint8List bytes) async {
     await SharePlus.instance.share(
-      ShareParams(files: [XFile(file.path)]),
+      ShareParams(
+        files: [
+          XFile.fromData(
+            bytes,
+            name: 'hayati-qr.png',
+            mimeType: 'image/png',
+          ),
+        ],
+      ),
     );
   }
 
   Future<void> _saveQr() async {
-    await _captureQr();
+    final bytes = await _captureQrBytes();
+
+    if (widget.onSaveQrBytes != null) {
+      await widget.onSaveQrBytes!(bytes);
+    } else if (kIsWeb) {
+      await downloadQrBytes(bytes);
+    } else {
+      await _shareQrBytes(bytes);
+    }
+
     if (!mounted) {
       return;
     }

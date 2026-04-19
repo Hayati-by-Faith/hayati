@@ -41,4 +41,10 @@ fi
 
 "$script_dir/preflight.sh" --project prod
 
-firebase deploy --only firestore:rules,firestore:indexes,functions -P prod
+flutter build web --release --dart-define=FLAVOR=prod \
+  --dart-define=FIREBASE_WEB_API_KEY_PROD="${FIREBASE_WEB_API_KEY_PROD:?Missing FIREBASE_WEB_API_KEY_PROD}" \
+  --dart-define=FIREBASE_WEB_APP_ID_PROD="${FIREBASE_WEB_APP_ID_PROD:?Missing FIREBASE_WEB_APP_ID_PROD}" \
+  --dart-define=FIREBASE_WEB_MEASUREMENT_ID_PROD="${FIREBASE_WEB_MEASUREMENT_ID_PROD:-}" \
+  --dart-define=FIREBASE_WEB_APPCHECK_SITE_KEY="${FIREBASE_WEB_APPCHECK_SITE_KEY_PROD:?Missing FIREBASE_WEB_APPCHECK_SITE_KEY_PROD}"
+
+firebase deploy --only firestore:rules,firestore:indexes,functions,hosting -P prod

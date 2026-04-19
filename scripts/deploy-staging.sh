@@ -32,4 +32,10 @@ fi
 
 "$script_dir/preflight.sh" --project staging
 
-firebase deploy --only firestore:rules,firestore:indexes,functions -P staging
+flutter build web --release --dart-define=FLAVOR=staging \
+  --dart-define=FIREBASE_WEB_API_KEY_STAGING="${FIREBASE_WEB_API_KEY_STAGING:?Missing FIREBASE_WEB_API_KEY_STAGING}" \
+  --dart-define=FIREBASE_WEB_APP_ID_STAGING="${FIREBASE_WEB_APP_ID_STAGING:?Missing FIREBASE_WEB_APP_ID_STAGING}" \
+  --dart-define=FIREBASE_WEB_MEASUREMENT_ID_STAGING="${FIREBASE_WEB_MEASUREMENT_ID_STAGING:-}" \
+  --dart-define=FIREBASE_WEB_APPCHECK_SITE_KEY="${FIREBASE_WEB_APPCHECK_SITE_KEY_STAGING:?Missing FIREBASE_WEB_APPCHECK_SITE_KEY_STAGING}"
+
+firebase deploy --only firestore:rules,firestore:indexes,functions,hosting -P staging

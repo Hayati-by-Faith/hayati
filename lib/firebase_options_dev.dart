@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -50,19 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyABVnhVp0oyZiPXX6bCPpHBWK4LRHHmBOg',
-    appId: '1:348440589298:android:948500099bff811b09716b',
-    messagingSenderId: '348440589298',
-    projectId: 'hayati-dev-20260408',
-    storageBucket: 'hayati-dev-20260408.firebasestorage.app',
+    apiKey: 'AIzaSyDyjWh1QK1MkGykNT4POqqRLabHwhxHG2I',
+    appId: '1:1042673137979:android:5b23784304eee9254c9f1e',
+    messagingSenderId: '1042673137979',
+    projectId: 'haya-by-faith',
+    storageBucket: 'haya-by-faith.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDwY6asx81IQy4WH4Y7UwS-qB3jxpWRYkU',
-    appId: '1:348440589298:ios:3507bb645adf03ab09716b',
-    messagingSenderId: '348440589298',
-    projectId: 'hayati-dev-20260408',
-    storageBucket: 'hayati-dev-20260408.firebasestorage.app',
+    apiKey: 'AIzaSyDKNqlBQYTAaY-rvudaV1nxuetI9Tod2Sg',
+    appId: '1:1042673137979:ios:d3680ea1be92d6804c9f1e',
+    messagingSenderId: '1042673137979',
+    projectId: 'haya-by-faith',
+    storageBucket: 'haya-by-faith.firebasestorage.app',
     iosBundleId: 'org.elhaya.hayati',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyD_IfuzlSWPnyD4kD2xSnevlpDBvnTIsC4',
+    appId: '1:1042673137979:web:18f72622e339ac1f4c9f1e',
+    messagingSenderId: '1042673137979',
+    projectId: 'haya-by-faith',
+    authDomain: 'haya-by-faith.firebaseapp.com',
+    storageBucket: 'haya-by-faith.firebasestorage.app',
+    measurementId: 'G-5R907G8KD9',
+  );
+
 }

@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/providers/auth_provider.dart';
+import '../core/utils/localization.dart';
 import '../features/enrollment/screens/enrollment_screen.dart';
 import '../features/enrollment/screens/enrollment_success_screen.dart';
 import '../features/home/screens/resident_home_screen.dart';
@@ -18,6 +20,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ref.watch(authSessionProvider);
   return GoRouter(
     initialLocation: '/welcome',
+    errorBuilder: (context, state) {
+      return Scaffold(
+        appBar: AppBar(title: Text(context.l('not_found_title'))),
+        body: Center(
+          child: Text(
+            context.l('not_found_body'),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    },
     routes: [
       GoRoute(
         path: '/welcome',

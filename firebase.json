@@ -1,1 +1,150 @@
-{"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"emulators":{"firestore":{"port":8080}},"flutter":{"platforms":{"android":{"default":{"projectId":"hayati-prod-20260408","appId":"1:721686602870:android:eb4a2a8a740283c26aab57","fileOutput":"android/app/src/prod/google-services.json"},"buildConfigurations":{"src\\dev":{"projectId":"hayati-dev-20260408","appId":"1:348440589298:android:948500099bff811b09716b","fileOutput":"android/app/src/dev/google-services.json"},"src\\prod":{"projectId":"hayati-prod-20260408","appId":"1:721686602870:android:eb4a2a8a740283c26aab57","fileOutput":"android/app/src/prod/google-services.json"},"src\\staging":{"projectId":"hayati-staging-20260408","appId":"1:853595632989:android:8d3ce0967f030b8e8324b4","fileOutput":"android/app/src/staging/google-services.json"}}},"dart":{"lib/firebase_options_staging.dart":{"projectId":"hayati-staging-20260408","configurations":{"android":"1:853595632989:android:8d3ce0967f030b8e8324b4"}},"lib/firebase_options_dev.dart":{"projectId":"hayati-dev-20260408","configurations":{"android":"1:348440589298:android:948500099bff811b09716b"}},"lib/firebase_options_prod.dart":{"projectId":"hayati-prod-20260408","configurations":{"android":"1:721686602870:android:eb4a2a8a740283c26aab57"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=63072000; includeSubDomains; preload"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(self), geolocation=(self), microphone=(self), payment=()"
+          },
+          {
+            "key": "Cross-Origin-Opener-Policy",
+            "value": "same-origin-allow-popups"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://apis.google.com https://www.google.com/recaptcha/ https://www.recaptcha.net/recaptcha/ https://www.google.com/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://www.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseappcheck.googleapis.com https://firebaseinstallations.googleapis.com https://europe-west1-hayati-dev-20260408.cloudfunctions.net https://europe-west1-hayati-staging-20260408.cloudfunctions.net https://europe-west1-hayati-prod-20260408.cloudfunctions.net https://firebasestorage.googleapis.com https://www.google-analytics.com; frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/ https://*.firebaseapp.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          }
+        ]
+      },
+      {
+        "source": "/index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/flutter_bootstrap.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/firebase-messaging-sw.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "Service-Worker-Allowed",
+            "value": "/"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css|png|jpg|jpeg|svg|webp|ico|woff|woff2|ttf|otf)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      }
+    ]
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080
+    }
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "hayati-prod-20260408",
+          "appId": "1:721686602870:android:eb4a2a8a740283c26aab57",
+          "fileOutput": "android/app/src/prod/google-services.json"
+        },
+        "buildConfigurations": {
+          "src\\dev": {
+            "projectId": "haya-by-faith",
+            "appId": "1:1042673137979:android:5b23784304eee9254c9f1e",
+            "fileOutput": "android/app/src/dev/google-services.json"
+          },
+          "src\\prod": {
+            "projectId": "hayati-prod-20260408",
+            "appId": "1:721686602870:android:eb4a2a8a740283c26aab57",
+            "fileOutput": "android/app/src/prod/google-services.json"
+          },
+          "src\\staging": {
+            "projectId": "hayati-staging-20260408",
+            "appId": "1:853595632989:android:8d3ce0967f030b8e8324b4",
+            "fileOutput": "android/app/src/staging/google-services.json"
+          }
+        }
+      }
+    },
+    "dart": {
+      "lib/firebase_options_dev.dart": {
+        "projectId": "haya-by-faith",
+        "configurations": {
+          "android": "1:1042673137979:android:5b23784304eee9254c9f1e",
+          "ios": "1:1042673137979:ios:d3680ea1be92d6804c9f1e",
+          "web": "1:1042673137979:web:18f72622e339ac1f4c9f1e"
+        }
+      },
+      "lib/firebase_options_staging.dart": {
+        "projectId": "hayati-staging-20260408",
+        "configurations": {
+          "android": "1:853595632989:android:8d3ce0967f030b8e8324b4"
+        }
+      },
+      "lib/firebase_options_prod.dart": {
+        "projectId": "hayati-prod-20260408",
+        "configurations": {
+          "android": "1:721686602870:android:eb4a2a8a740283c26aab57"
+        }
+      }
+    }
+  }
+}
