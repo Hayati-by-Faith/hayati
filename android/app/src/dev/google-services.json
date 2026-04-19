@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1042673137979",
-    "project_id": "haya-by-faith",
-    "storage_bucket": "haya-by-faith.firebasestorage.app"
+    "project_number": "348440589298",
+    "project_id": "hayati-dev-20260408",
+    "storage_bucket": "hayati-dev-20260408.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1042673137979:android:5b23784304eee9254c9f1e",
+        "mobilesdk_app_id": "1:348440589298:android:86eaac15d60df57f09716b",
         "android_client_info": {
           "package_name": "org.elhaya.hayati"
         }
@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDyjWh1QK1MkGykNT4POqqRLabHwhxHG2I"
+          "current_key": "AIzaSyABVnhVp0oyZiPXX6bCPpHBWK4LRHHmBOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348440589298:android:948500099bff811b09716b",
+        "android_client_info": {
+          "package_name": "org.elhaya.hayati.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABVnhVp0oyZiPXX6bCPpHBWK4LRHHmBOg"
         }
       ],
       "services": {

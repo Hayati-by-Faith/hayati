@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "haya-by-faith",
-    "dev": "haya-by-faith",
+    "default": "hayati-dev-20260408",
+    "dev": "hayati-dev-20260408",
     "staging": "hayati-staging-20260408",
     "prod": "hayati-prod-20260408"
   },
   "targets": {
-    "haya-by-faith": {
+    "hayati-dev-20260408": {
       "hosting": {
         "dev": [
           "hayati-dev"

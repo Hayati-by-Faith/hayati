@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -61,24 +64,5 @@ class DefaultFirebaseOptions {
     projectId: 'hayati-staging-20260408',
     storageBucket: 'hayati-staging-20260408.firebasestorage.app',
     iosBundleId: 'org.elhaya.hayati',
-  );
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: String.fromEnvironment(
-      'FIREBASE_WEB_API_KEY_STAGING',
-      defaultValue: '',
-    ),
-    appId: String.fromEnvironment(
-      'FIREBASE_WEB_APP_ID_STAGING',
-      defaultValue: '',
-    ),
-    messagingSenderId: '853595632989',
-    projectId: 'hayati-staging-20260408',
-    authDomain: 'hayati-staging-20260408.firebaseapp.com',
-    storageBucket: 'hayati-staging-20260408.firebasestorage.app',
-    measurementId: String.fromEnvironment(
-      'FIREBASE_WEB_MEASUREMENT_ID_STAGING',
-      defaultValue: '',
-    ),
   );
 }
