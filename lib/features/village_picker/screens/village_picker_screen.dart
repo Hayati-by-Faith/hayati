@@ -14,7 +14,11 @@ class VillagePickerScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.l('village_picker_title')),
+        title: Text(
+          context.l('village_picker_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

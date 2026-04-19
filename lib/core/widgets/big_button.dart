@@ -19,7 +19,11 @@ class BigButton extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: onPressed,
         icon: icon == null ? const SizedBox.shrink() : Icon(icon),
-        label: Text(label),
+        label: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

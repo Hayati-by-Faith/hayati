@@ -22,7 +22,13 @@ class QrScannerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final detect = onDetect ?? (_) {};
     return Scaffold(
-      appBar: AppBar(title: Text(context.l('scanner_title'))),
+      appBar: AppBar(
+        title: Text(
+          context.l('scanner_title'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: Column(
         children: [
           Padding(

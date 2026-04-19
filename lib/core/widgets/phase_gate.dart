@@ -33,11 +33,15 @@ class PhaseGate extends ConsumerWidget {
                 Text(
                   context.l('phase_locked_title'),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   context.l('phase_locked_body'),
                   textAlign: TextAlign.center,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

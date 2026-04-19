@@ -131,7 +131,13 @@ class _PhoneOtpScreenState extends ConsumerState<PhoneOtpScreen> {
     return LoadingOverlay(
       isLoading: _isBusy,
       child: Scaffold(
-        appBar: AppBar(title: Text(context.l('phone_otp_title'))),
+        appBar: AppBar(
+          title: Text(
+            context.l('phone_otp_title'),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
